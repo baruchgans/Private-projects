@@ -1,0 +1,166 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    table.pokemon-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table.pokemon-table th,
+    table.pokemon-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    table.pokemon-table th {
+        background-color: #f2f2f2;
+    }
+
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination a {
+        padding: 8px 16px;
+        text-decoration: none;
+        background-color: #ddd;
+        border-radius: 4px;
+    }
+
+    .pagination a:hover {
+        background-color: #ccc;
+    }
+
+    .pagination .current-page {
+        padding: 8px 16px;
+        margin: 0 8px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+    }
+
+    #page-size-form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .page-size-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 18px;
+    }
+
+    #page-size-form label {
+        margin-right: 8px;
+    }
+
+    #page-size-form select {
+        margin-right: 8px;
+    }
+
+    #page-size-form input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #page-size-form input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+</style>
+
+
+<table class="pokemon-table">
+    <tr>
+        <th>Name</th>
+        <th>Number</th>
+        <th>Type One</th>
+        <th>Type Two</th>
+        <th>Total</th>
+        <th>HP</th>
+        <th>Attack</th>
+        <th>Defense</th>
+        <th>Special Attack</th>
+        <th>Special Defense</th>
+        <th>Speed</th>
+        <th>Generation</th>
+        <th>Legendary</th>
+    </tr>
+    {% for pokemon in pokemons %}
+        <tr>
+            <td>{{ pokemon.name }}</td>
+            <td>{{ pokemon.number }}</td>
+            <td>{{ pokemon.type_one }}</td>
+            <td>{{ pokemon.type_two }}</td>
+            <td>{{ pokemon.total }}</td>
+            <td>{{ pokemon.hit_points }}</td>
+            <td>{{ pokemon.attack }}</td>
+            <td>{{ pokemon.defense }}</td>
+            <td>{{ pokemon.special_attack }}</td>
+            <td>{{ pokemon.special_defense }}</td>
+            <td>{{ pokemon.speed }}</td>
+            <td>{{ pokemon.generation }}</td>
+            <td>{{ pokemon.legendary }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+<div class="pagination">
+    {% if pokemons.has_previous %}
+        <a href="{% url 'pokedex' page_number=pokemons.previous_page_number %}?page_size={{ page_size }}">Previous</a>
+
+    {% endif %}
+    <span class="current-page">{{ page.number }}</span>
+    {% if pokemons.has_next %}
+        <a href="{% url 'pokedex' page_number=pokemons.next_page_number %}?page_size={{ page_size }}">Next</a>
+    {% endif %}
+</div>
+
+<form id="page-size-form">
+    <label for="page-size-select">Page size:</label>
+    <select id="page-size-select" name="page_size" rel="">
+        <option value="5" {% if page_size == 5 %}selected{% endif %}>5</option>
+        <option value="10" selected="selected" {% if page_size == 10 %}selected{% endif %}>10</option>
+        <option value="20" {% if page_size == 20 %}selected{% endif %}>20</option>
+    </select>
+    <input type="submit" value="Apply" class="page-size-button">
+</form>
+
+<script>
+    $(document).ready(function () {
+        console.log("document ready function called");
+        var pageSize =
+        {{ request.GET.page_size }} ||
+        10;
+        $('#page-size-select').val(pageSize);
+
+        $('#page-size-form').submit(function (event) {
+            event.preventDefault();
+            var pageSize = $('#page-size-select').val();
+            var params = new URLSearchParams(location.search);
+            params.set("page_size", pageSize);
+            window.location.search = params.toString();
+        });
+    });
+</script>
+
