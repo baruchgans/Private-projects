@@ -1,92 +1,105 @@
+<html>
+<head>
+    <style>
+        .pokemon-table {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .pokemon-table td, .pokemon-table th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .pokemon-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .pokemon-table tr:hover {
+            background-color: #ddd;
+        }
+
+        .pokemon-table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        {#style for dark #}
+
+        .dark .pokemon-table {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark .pokemon-table td, .dark .pokemon-table th {
+            border: 1px solid #fff;
+        }
+
+        .dark .pokemon-table tr:nth-child(even) {
+            background-color: #444;
+        }
+
+        .dark .pokemon-table tr:hover {
+            background-color: #555;
+        }
+
+        .dark .pokemon-table th {
+            background-color: #222;
+        }
+
+
+        .pagination a {
+            color: #04AA6D;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .pagination span.current-page {
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        form label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        form input[type="text"], form select {
+            padding: 5px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        form input[type="submit"], .page-size-button {
+            padding: 5px 10px;
+            background-color: #04AA6D;
+            color: #fff;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #toggle-mode {
+            padding: 5px 10px;
+            background-color: #04AA6D;
+            color: #fff;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            float: right;
+        }
+
+
+    </style>
+</head>
+<body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<style>
-    table.pokemon-table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    table.pokemon-table th,
-    table.pokemon-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    table.pokemon-table th {
-        background-color: #f2f2f2;
-    }
-
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    .pagination {
-        display: flex;
-        justify-content: center;
-    }
-
-    .pagination a {
-        padding: 8px 16px;
-        text-decoration: none;
-        background-color: #ddd;
-        border-radius: 4px;
-    }
-
-    .pagination a:hover {
-        background-color: #ccc;
-    }
-
-    .pagination .current-page {
-        padding: 8px 16px;
-        margin: 0 8px;
-        background-color: #007bff;
-        color: white;
-        border-radius: 4px;
-    }
-
-    #page-size-form {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .page-size-button {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        font-size: 18px;
-    }
-
-    #page-size-form label {
-        margin-right: 8px;
-    }
-
-    #page-size-form select {
-        margin-right: 8px;
-    }
-
-    #page-size-form input[type="submit"] {
-        background-color: #4CAF50;
-        color: white;
-        padding: 12px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    #page-size-form input[type="submit"]:hover {
-        background-color: #45a049;
-    }
-
-</style>
 
 
 <table class="pokemon-table">
@@ -104,6 +117,7 @@
         <th>Speed</th>
         <th>Generation</th>
         <th>Legendary</th>
+        <th>Photo</th>
     </tr>
     {% for pokemon in pokemons %}
         <tr>
@@ -120,6 +134,11 @@
             <td>{{ pokemon.speed }}</td>
             <td>{{ pokemon.generation }}</td>
             <td>{{ pokemon.legendary }}</td>
+            <td><img
+                    src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.number }}.png"/>
+            </td>
+
+
         </tr>
     {% endfor %}
 </table>
@@ -127,14 +146,21 @@
 
 <div class="pagination">
     {% if pokemons.has_previous %}
-        <a href="{% url 'pokedex' page_number=pokemons.previous_page_number %}?page_size={{ page_size }}">Previous</a>
-
+        <a href="{% url 'pokedex' page_number=pokemons.previous_page_number %}?page_size={{ page_size }}&sort_direction={{ sort_direction }}&filter_term={{ filter_term }}">Previous</a>
     {% endif %}
     <span class="current-page">{{ page.number }}</span>
     {% if pokemons.has_next %}
-        <a href="{% url 'pokedex' page_number=pokemons.next_page_number %}?page_size={{ page_size }}">Next</a>
+        <a href="{% url 'pokedex' page_number=pokemons.next_page_number %}?page_size={{ page_size }}&sort_direction={{ sort_direction }}&filter_term={{ filter_term }}">Next</a>
     {% endif %}
 </div>
+
+
+<form id="filter-form">
+    <label for="filter-input">Filter by Type:</label>
+    <input type="text" id="filter-input" name="filter_term" value="{{ filter_term }}">
+    <button type="submit" id="filter-submit">Apply</button>
+</form>
+
 
 <form id="page-size-form">
     <label for="page-size-select">Page size:</label>
@@ -146,13 +172,22 @@
     <input type="submit" value="Apply" class="page-size-button">
 </form>
 
+<form id="sort-form">
+    <label for="sort-select">Sort by:</label>
+    <select id="sort-select" name="sort_direction">
+        <option value="asc" {% if sort_direction == 'asc' %}selected{% endif %}>Ascending</option>
+        <option value="desc" {% if sort_direction == 'desc' %}selected{% endif %}>Descending</option>
+    </select>
+    <input type="submit" value="Apply">
+</form>
+
+<button id="toggle-mode">Toggle Mode</button>
+
 <script>
     $(document).ready(function () {
-        console.log("document ready function called");
         var pageSize =
-        {{ request.GET.page_size }} ||
-        10;
-        $('#page-size-select').val(pageSize);
+            {{ request.GET.page_size }}
+            $('#page-size-select').val(pageSize);
 
         $('#page-size-form').submit(function (event) {
             event.preventDefault();
@@ -161,6 +196,56 @@
             params.set("page_size", pageSize);
             window.location.search = params.toString();
         });
+
+
+        document.getElementById("sort-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var sortDirection = $('#sort-select').val();
+            var params = new URLSearchParams(location.search);
+            params.set("sort_direction", sortDirection);
+            window.location.search = params.toString();
+        });
+
+
+        document.getElementById("filter-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var filterTerm = $('#filter-input').val().toLowerCase();
+            var params = new URLSearchParams(location.search);
+            params.set("filter_term", filterTerm);
+            var url = window.location.href;
+            var pageRegex = /\/page\/(\d+)\//;
+            var pageMatch = url.match(pageRegex);
+            if (pageMatch) {
+                url = url.replace(pageMatch[0], "/page/1/");
+            }
+            window.location.href = `${url}?${params.toString()}`;
+
+        });
+
+
+    });
+
+    var toggleBtn = document.getElementById("toggle-mode");
+    var isDark = false;
+
+    toggleBtn.addEventListener("click", function () {
+        isDark = !isDark;
+
+        if (isDark) {
+            document.body.classList.add("dark");
+        } else {
+            document.body.classList.remove("dark");
+        }
     });
 </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
 
