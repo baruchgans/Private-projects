@@ -4,8 +4,12 @@ function MyList() {
     const [var1, setvar1] = useState([]);
     const [var2, setvar2] = useState('');
     const [var3, setvar3] = useState(1);
+    const [inputValue, setInputValue] = useState(1);
 
 
+    function setSomthing(data) {
+        setvar3(data.book)
+    }
 
     useEffect(() => {
         fetch(`https://example_url`)
@@ -17,7 +21,10 @@ function MyList() {
 
         const handleInputChange = event => {
         setInputValue(event.target.value);
+        setvar1("blabla")
+        setvar2("blabla")
     };
+
 
 
 
