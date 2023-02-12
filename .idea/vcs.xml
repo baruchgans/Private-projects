@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/brew_notifier_assignment" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/my_interview_assignments/ironsource_api" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/my_interview_assignments/pokedex_assignment" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/pokedex_assignment" vcs="Git" />
   </component>
